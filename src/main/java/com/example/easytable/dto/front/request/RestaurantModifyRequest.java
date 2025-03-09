@@ -1,14 +1,12 @@
-package com.example.easytable.dto.request;
+package com.example.easytable.dto.front.request;
 
+import com.example.easytable.dto.service.request.RestaurantModifyParam;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class RestaurantModifyRequest {
-
-    @NotNull
-    private Integer restaurantId;
 
     @NotBlank(message = "가게 이름은 필수 항목입니다.")
     private String name;
@@ -28,6 +26,17 @@ public class RestaurantModifyRequest {
     @NotBlank(message = "가게 설명은 필수 항목입니다.")
     private String description;
 
+
+    public RestaurantModifyParam convert() {
+        return new RestaurantModifyParam(
+                this.name,
+                this.location,
+                this.openingHours,
+                this.closingHours,
+                this.cuisineType,
+                this.description
+        );
+    }
 
 
 }

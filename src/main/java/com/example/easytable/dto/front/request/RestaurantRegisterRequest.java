@@ -1,5 +1,6 @@
-package com.example.easytable.dto.request;
+package com.example.easytable.dto.front.request;
 
+import com.example.easytable.dto.service.request.RestaurantRegisterParam;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
@@ -25,6 +26,18 @@ public class RestaurantRegisterRequest {
     @NotBlank(message = "가게 설명은 필수 항목입니다.")
     private String description;
 
+
+    public RestaurantRegisterParam convert() {
+
+        return new RestaurantRegisterParam(
+                this.name,
+                this.location,
+                this.openingHours,
+                this.closingHours,
+                this.cuisineType,
+                this.description
+        );
+    }
 
 
 }

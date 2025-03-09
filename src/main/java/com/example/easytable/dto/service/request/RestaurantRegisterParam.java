@@ -1,18 +1,31 @@
-package com.example.easytable.dto.response;
+package com.example.easytable.dto.service.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class RestaurantListResponse {
-
-    private Integer restaurantId;
+@Builder
+public class RestaurantRegisterParam {
+    
     private String name;
+
+
+    private String location;
+
+
     private String openingHours;
+
+
     private String closingHours;
+
+
+    private String cuisineType;
+
+
     private String description;
-    private Double rating;
 
 
 }
+

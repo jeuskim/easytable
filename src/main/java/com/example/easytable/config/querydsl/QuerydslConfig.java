@@ -1,4 +1,4 @@
-package com.example.easytable.config;
+package com.example.easytable.config.querydsl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

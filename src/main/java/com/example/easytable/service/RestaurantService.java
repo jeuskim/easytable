@@ -1,62 +1,63 @@
 package com.example.easytable.service;
 
-import com.example.easytable.dto.request.RestaurantListRequest;
-import com.example.easytable.dto.request.RestaurantModifyRequest;
-import com.example.easytable.dto.request.RestaurantRegisterRequest;
-import com.example.easytable.dto.response.ListResponse;
-import com.example.easytable.dto.response.RestaurantListResponse;
+import com.example.easytable.dto.front.request.RestaurantListRequest;
+import com.example.easytable.dto.front.request.RestaurantModifyRequest;
+import com.example.easytable.dto.front.request.RestaurantRegisterRequest;
+import com.example.easytable.dto.front.response.ListResponse;
+import com.example.easytable.dto.front.response.RestaurantListResponse;
+import com.example.easytable.dto.service.request.RestaurantListParam;
+import com.example.easytable.dto.service.request.RestaurantModifyParam;
+import com.example.easytable.dto.service.request.RestaurantRegisterParam;
 import com.example.easytable.entity.Restaurant;
 import com.example.easytable.entity.User;
+import com.example.easytable.exception.UnauthorizedException;
 import com.example.easytable.repository.restaurant.RestaurantRepository;
-import com.example.easytable.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-    private final UserRepository userRepository;
 
-    public void registerRestaurant(Integer userId, RestaurantRegisterRequest request) {
+    public void registerRestaurant(User user, RestaurantRegisterParam request) {
 
-        User manager = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
+        if (!user.getRole().equals("MANAGER")) {
+            throw new RuntimeException("권한이 없습니다.");
+        }
 
         restaurantRepository.save(
                 Restaurant.builder()
                         .name(request.getName())
                         .location(request.getLocation())
                         .cuisineType(request.getCuisineType())
-                        .manager(manager)
+                        .manager(user)
                         .openingHours(request.getOpeningHours())
                         .closingHours(request.getClosingHours())
-                        .createTime(LocalDateTime.now())
-                        .updateTime(LocalDateTime.now())
+                        .description(request.getDescription())
                         .build()
 
         );
 
-
-
     }
 
-    public void modifyRestaurant(Integer userId, RestaurantModifyRequest request) {
+    public void modifyRestaurant(User user, Long restaurantId, RestaurantModifyParam request) {
 
-        User manager = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
+        log.info("restaurantId = {}", restaurantId);
 
-        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RuntimeException("해당 가게가 없음."));
 
+        log.info("restaurant.mangerId ={}", restaurant.getManager().getId());
+        log.info("user.id = {}", user.getId());
 
-        if (!restaurant.getManager().equals(manager)) {
-            throw new RuntimeException("가게를 수정할 권한이 없습니다.");
+        if (!restaurant.getManager().getId().equals(user.getId())) {
+            throw new UnauthorizedException();
         }
 
         restaurant.modify(request);
@@ -64,12 +65,9 @@ public class RestaurantService {
 
     }
 
-    public ListResponse<RestaurantListResponse> getRestaurants(RestaurantListRequest request) {
-       return restaurantRepository.findRestaurants(request);
+    public ListResponse<RestaurantListResponse> getRestaurants(RestaurantListParam request) {
+        return restaurantRepository.findRestaurants(request);
     }
-
-
-
 
 
 }

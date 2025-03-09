@@ -1,4 +1,4 @@
-package com.example.easytable.dto.response;
+package com.example.easytable.dto.front.response;
 
 import lombok.Getter;
 import lombok.Setter;

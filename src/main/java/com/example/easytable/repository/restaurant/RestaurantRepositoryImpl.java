@@ -1,9 +1,9 @@
 package com.example.easytable.repository.restaurant;
 
-import com.example.easytable.dto.response.ListResponse;
-import com.example.easytable.dto.request.RestaurantListRequest;
-import com.example.easytable.dto.response.RestaurantListResponse;
-import com.example.easytable.repository.restaurant.RestaurantRepositoryCustom;
+import com.example.easytable.dto.front.response.ListResponse;
+import com.example.easytable.dto.front.request.RestaurantListRequest;
+import com.example.easytable.dto.front.response.RestaurantListResponse;
+import com.example.easytable.dto.service.request.RestaurantListParam;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -18,14 +18,14 @@ import static com.example.easytable.entity.QReview.review;
 
 @Repository
 @RequiredArgsConstructor
-public class RestaurantRepositoryImpl  implements RestaurantRepositoryCustom {
+public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
     private static final Integer OFFSET = 5;
 
 
     @Override
-    public ListResponse<RestaurantListResponse> findRestaurants(RestaurantListRequest request) {
+    public ListResponse<RestaurantListResponse> findRestaurants(RestaurantListParam request) {
 
 
         ListResponse<RestaurantListResponse> response = new ListResponse<>();
@@ -38,10 +38,9 @@ public class RestaurantRepositoryImpl  implements RestaurantRepositoryCustom {
         }
 
 
-
         List<RestaurantListResponse> results = queryFactory
                 .select(Projections.constructor(RestaurantListResponse.class,
-                        restaurant.restaurantId.as("restaurantId"),
+                        restaurant.id.as("id"),
                         restaurant.name.as("name"),
                         restaurant.openingHours.as("openingHours"),
                         restaurant.closingHours.as("closingHours"),
@@ -49,11 +48,11 @@ public class RestaurantRepositoryImpl  implements RestaurantRepositoryCustom {
                         review.rating.avg().coalesce(0.0).as("rating")
                 ))
                 .from(restaurant)
-                .leftJoin(review).on(restaurant.restaurantId.eq(review.restaurant.restaurantId))
-                .groupBy(restaurant.restaurantId)
+                .leftJoin(review).on(restaurant.id.eq(review.restaurant.id))
+                .groupBy(restaurant.id)
                 .where(builder)
-                .offset(OFFSET)
-                .limit(request.getPage() + 1)
+                .offset((request.getPage() - 1) * 5L)
+                .limit(OFFSET + 1)
                 .fetch();
 
         boolean hasNext = results.size() > OFFSET;

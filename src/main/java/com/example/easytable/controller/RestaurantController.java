@@ -1,39 +1,45 @@
 package com.example.easytable.controller;
 
-import com.example.easytable.dto.request.RestaurantListRequest;
-import com.example.easytable.dto.request.RestaurantModifyRequest;
-import com.example.easytable.dto.request.RestaurantRegisterRequest;
-import com.example.easytable.dto.response.ListResponse;
-import com.example.easytable.dto.response.RestaurantListResponse;
+import com.example.easytable.dto.front.request.RestaurantListRequest;
+import com.example.easytable.dto.front.request.RestaurantModifyRequest;
+import com.example.easytable.dto.front.request.RestaurantRegisterRequest;
+import com.example.easytable.dto.front.response.ApiResponse;
+import com.example.easytable.dto.front.response.ListResponse;
+import com.example.easytable.dto.front.response.RestaurantListResponse;
+import com.example.easytable.entity.User;
 import com.example.easytable.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/restaurants")
 @RequiredArgsConstructor
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
 
-    public void registerRestaurant(@SessionAttribute("userId") Integer userId,
-                                   @RequestBody RestaurantRegisterRequest request) {
+    @PostMapping("/register")
+    public ApiResponse registerRestaurant(User user, @RequestBody RestaurantRegisterRequest request) {
 
-        restaurantService.registerRestaurant(userId, request);
-    }
+        restaurantService.registerRestaurant(user, request.convert());
 
-    public void modifyRestaurant(@SessionAttribute("userId") Integer userId,
-                                 @RequestBody RestaurantModifyRequest request) {
-
-        restaurantService.modifyRestaurant(userId, request);
+        return ApiResponse.success(null);
 
     }
 
-    public ListResponse<RestaurantListResponse> getRestaurants(@RequestBody RestaurantListRequest request) {
+    @PatchMapping("/{restaurantId}")
+    public ApiResponse modifyRestaurant(User user, @PathVariable Long restaurantId,
+                                        @RequestBody RestaurantModifyRequest request) {
 
-        return restaurantService.getRestaurants(request);
+        restaurantService.modifyRestaurant(user, restaurantId, request.convert());
+
+        return ApiResponse.success(null);
+    }
+
+    @GetMapping("/")
+    public ApiResponse<ListResponse<RestaurantListResponse>> getRestaurants(@RequestBody RestaurantListRequest request) {
+        return ApiResponse.success(restaurantService.getRestaurants(request.convert()));
 
     }
 

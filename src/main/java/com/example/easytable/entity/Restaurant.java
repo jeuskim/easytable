@@ -1,23 +1,23 @@
 package com.example.easytable.entity;
 
 
-import com.example.easytable.dto.request.RestaurantModifyRequest;
+import com.example.easytable.dto.front.request.RestaurantModifyRequest;
+import com.example.easytable.dto.service.request.RestaurantModifyParam;
+import com.example.easytable.entity.base.BaseEntity;
 import lombok.*;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = PROTECTED)
-@Table(name = "Restaurant")
-public class Restaurant {
+public class Restaurant extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int restaurantId;
+    private Long id;
 
     private String name;
     private String location;
@@ -26,37 +26,31 @@ public class Restaurant {
 
 
     @ManyToOne
-    @JoinColumn(name = "manager_id")
+    @JoinColumn
     private User manager;
 
     private String openingHours;
     private String closingHours;
 
-    @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
 
-    @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
     @Builder
     public Restaurant(String name, String location, String cuisineType,
-                      User manager, String openingHours, String closingHours,
-                      LocalDateTime createTime, LocalDateTime updateTime) {
+                      User manager, String openingHours, String closingHours, String description) {
         this.name = name;
         this.location = location;
         this.cuisineType = cuisineType;
         this.manager = manager;
         this.openingHours = openingHours;
         this.closingHours = closingHours;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
+        this.description = description;
     }
 
-    public void modify(RestaurantModifyRequest request) {
+    public void modify(RestaurantModifyParam request) {
         this.name = request.getName();
         this.location = request.getLocation();
         this.cuisineType = request.getCuisineType();
         this.openingHours = request.getOpeningHours();
         this.closingHours = request.getClosingHours();
-
+        this.description = request.getDescription();
     }
 }
