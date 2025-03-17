@@ -1,6 +1,7 @@
 package com.example.easytable.entity;
 
 
+import com.example.easytable.entity.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,12 +10,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@Table(name = "Restaurant")
-public class Restaurant {
+public class Restaurant extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int restaurantId;
+    private Long id;
 
     private String name;
     private String location;
@@ -27,9 +27,5 @@ public class Restaurant {
     private String openingHours;
     private String closingHours;
 
-    @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
 
-    @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
 }

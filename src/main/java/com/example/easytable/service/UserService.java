@@ -1,11 +1,13 @@
 package com.example.easytable.service;
 
-import com.example.easytable.dto.user.request.LoginRequest;
-import com.example.easytable.dto.user.request.RegisterRequest;
-import com.example.easytable.dto.user.request.UpdateRequest;
+import com.example.easytable.dto.api.user.request.LoginRequest;
+import com.example.easytable.dto.api.user.request.RegisterRequest;
+import com.example.easytable.dto.api.user.request.UpdateRequest;
+import com.example.easytable.dto.service.request.LoginParam;
+import com.example.easytable.dto.service.request.RegisterParam;
+import com.example.easytable.dto.service.request.UpdateParam;
 import com.example.easytable.entity.User;
 import com.example.easytable.repository.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,59 +23,55 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void registerUser(RegisterRequest request) {
+    public void registerUser(RegisterParam param) {
 
-        if (!request.getPassword().equals(request.getPasswordCheck())) {
+        if (!param.getPassword().equals(param.getPasswordCheck())) {
             throw new RuntimeException("비밀번호와 비밀번호 확인이 다릅니다.");
         }
 
-        String encode = passwordEncoder.encode(request.getPassword());
+        String encode = passwordEncoder.encode(param.getPassword());
 
         userRepository.save(
                 User.builder()
-                        .name(request.getName())
-                        .email(request.getEmail())
+                        .name(param.getName())
+                        .email(param.getEmail())
                         .password(encode)
-                        .phone(request.getPhone())
+                        .phone(param.getPhone())
                         .role("GUEST")
-                        .createTime(LocalDateTime.now())
-                        .updateTime(LocalDateTime.now())
                         .build()
         );
 
 
     }
 
-    public Integer login(LoginRequest request) {
+    public Long login(LoginParam param) {
 
-        User user = userRepository.findUserByEmail(request.getEmail())
+        User user = userRepository.findUserByEmail(param.getEmail())
                 .orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(param.getPassword(), user.getPassword())) {
             throw new RuntimeException("아이디나 패스워드가 다릅니다.");
         }
 
-        return user.getUserId();
+        return user.getId();
 
 
     }
 
-    public void updateUserProfile(Integer userId, UpdateRequest request) {
+    public void updateUserProfile(User user, UpdateParam param) {
 
+        User changeUser = userRepository.findById(user.getId()).get();
 
-        if (!request.getChangePassword().equals(request.getPasswordCheck())) {
+        if (!param.getChangePassword().equals(param.getPasswordCheck())) {
             throw new RuntimeException("비밀번호와 비밀번호 확인이 다릅니다.");
         }
 
+        if (!passwordEncoder.matches(param.getNowPassword(), user.getPassword())) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당 유저 없음."));
-
-        if (passwordEncoder.matches(request.getNowPassword(), user.getPassword())) {
-
-            user.changePassword(passwordEncoder.encode(request.getChangePassword()));
-
+            throw new RuntimeException("현재 비밀번호가 다릅니다.");
         }
+
+        changeUser.changePassword(passwordEncoder.encode(param.getChangePassword()));
 
     }
 
