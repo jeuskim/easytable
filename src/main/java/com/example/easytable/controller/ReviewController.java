@@ -1,15 +1,19 @@
 package com.example.easytable.controller;
 
-import com.example.easytable.dto.request.review.WriteReviewRequest;
-import com.example.easytable.dto.request.review.editReviewRequest;
-import com.example.easytable.dto.response.ReviewListResponse;
+import com.example.easytable.dto.api.request.review.WriteReviewRequest;
+import com.example.easytable.dto.api.request.review.EditReviewRequest;
+import com.example.easytable.dto.api.response.ApiResponse;
+import com.example.easytable.dto.api.response.ReviewListResponse;
+import com.example.easytable.entity.User;
 import com.example.easytable.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Slf4j
 @RequestMapping("/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
@@ -18,38 +22,46 @@ public class ReviewController {
 
 
     @PostMapping("/write")
-    public void writeReview(@RequestBody WriteReviewRequest request) {
+    public ApiResponse writeReview(User user, @RequestBody WriteReviewRequest request) {
 
-        reviewService.writeReview(request);
 
+        log.info("하하");
+        reviewService.writeReview(user, request.convert());
+
+        return ApiResponse.success(null);
 
     }
 
     @DeleteMapping("/{reviewId}")
-    public void deleteReview(@PathVariable Integer reviewId) {
-        reviewService.deleteReview(reviewId);
+    public ApiResponse deleteReview(User user, @PathVariable Long reviewId) {
+
+        reviewService.deleteReview(user, reviewId);
+
+        return ApiResponse.success(null);
 
     }
 
-    @PatchMapping("/edit")
-    public void editReview(Integer userId, editReviewRequest request) {
+    @PatchMapping("/{reviewId}")
+    public ApiResponse editReview(User user, @PathVariable Long reviewId, @RequestBody EditReviewRequest request) {
 
-        reviewService.editReview(userId, request);
+        reviewService.editReview(user, reviewId, request.convert());
+
+        return ApiResponse.success(null);
 
 
     }
 
     @GetMapping("/{restaurantId}")
-    public List<ReviewListResponse> getReviews(@PathVariable Integer restaurantId) {
+    public ApiResponse<List<ReviewListResponse>> getReviews(@PathVariable Long restaurantId) {
 
-        return reviewService.getReviews(restaurantId);
+        return ApiResponse.success(reviewService.getReviews(restaurantId));
 
     }
 
     @GetMapping("/{restaurantId}/rating")
-    public Double getAverageRating(@PathVariable Integer restaurantId) {
+    public ApiResponse<Double> getAverageRating(@PathVariable Long restaurantId) {
 
-        return reviewService.getAverageRating(restaurantId);
+        return ApiResponse.success(reviewService.getAverageRating(restaurantId));
 
     }
 

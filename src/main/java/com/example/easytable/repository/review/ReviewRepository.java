@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Integer>,ReviewRepositoryCustom {
+public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
 
     @Query("select r from Review r join fetch r.user where r.restaurant = :restaurant")
     List<Review> getReviews(@Param("restaurant") Restaurant restaurant);

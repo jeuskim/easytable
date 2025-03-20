@@ -9,17 +9,17 @@ import static com.example.easytable.entity.QReview.*;
 
 @Repository
 @RequiredArgsConstructor
-public class ReviewRepositoryImpl  implements ReviewRepositoryCustom{
+public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
 
-    public Double getAverageRating(Integer restaurantId) {
+    public Double getAverageRating(Long restaurantId) {
 
         return queryFactory
                 .select(review.rating.avg().coalesce(0.0))
                 .from(review)
-                .where(review.restaurant.restaurantId.eq(restaurantId))
+                .where(review.restaurant.id.eq(restaurantId))
                 .fetchOne();
 
 

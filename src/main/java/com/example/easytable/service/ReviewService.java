@@ -1,23 +1,27 @@
 package com.example.easytable.service;
 
-import com.example.easytable.dto.request.review.WriteReviewRequest;
-import com.example.easytable.dto.request.review.editReviewRequest;
-import com.example.easytable.dto.response.ReviewListResponse;
+import com.example.easytable.dto.api.request.review.WriteReviewRequest;
+import com.example.easytable.dto.api.request.review.EditReviewRequest;
+import com.example.easytable.dto.api.response.ReviewListResponse;
+import com.example.easytable.dto.service.request.EditReviewParam;
+import com.example.easytable.dto.service.request.WriteReviewParam;
 import com.example.easytable.entity.Restaurant;
 import com.example.easytable.entity.Review;
 import com.example.easytable.entity.User;
+import com.example.easytable.exception.UnauthorizedException;
 import com.example.easytable.repository.RestaurantRepository;
 import com.example.easytable.repository.review.ReviewRepository;
 import com.example.easytable.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class ReviewService {
 
@@ -25,54 +29,55 @@ public class ReviewService {
     private final RestaurantRepository restaurantRepository;
     private final ReviewRepository reviewRepository;
 
-    public void writeReview(WriteReviewRequest request) {
+    public void writeReview(User user, WriteReviewParam param) {
+        
 
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("해당 유저 없음."));
-        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+        Restaurant restaurant = restaurantRepository.findById(param.getRestaurantId())
                 .orElseThrow(() -> new RuntimeException("해당 가게가 없음."));
 
-        reviewRepository.save(
+        Review save = reviewRepository.save(
                 Review.builder()
                         .user(user)
                         .restaurant(restaurant)
-                        .rating(request.getRating())
-                        .comment(request.getComment())
-                        .reviewDatetime(request.getReviewDatetime())
-                        .createTime(LocalDateTime.now())
-                        .updateTime(LocalDateTime.now())
+                        .rating(param.getRating())
+                        .comment(param.getComment())
                         .build()
 
         );
 
+        log.info("키키={}", save);
 
 
     }
 
-    public void deleteReview(Integer reviewId){
 
-        reviewRepository.findById(reviewId)
+    public void deleteReview(User user, Long reviewId) {
+
+
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("해당 리뷰가 없음."));
 
+        authCheck(user, review);
+
+        reviewRepository.delete(review);
 
     }
 
-    public void editReview(Integer userId,editReviewRequest request) {
+    public void editReview(User user, Long reviewId, EditReviewParam param) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당 유저 없음."));
-        Review review = reviewRepository.findById(request.getReviewId())
+        Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("해당 리뷰 없음."));
 
-        review.edit(request.getEditComment());
+        authCheck(user, review);
 
-
+        review.edit(param);
 
 
     }
 
 
-    public List<ReviewListResponse> getReviews(Integer restaurantId) {
+
+    public List<ReviewListResponse> getReviews(Long restaurantId) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RuntimeException("해당 가게 없음."));
@@ -81,7 +86,7 @@ public class ReviewService {
 
     }
 
-    public Double getAverageRating(Integer restaurantId) {
+    public Double getAverageRating(Long restaurantId) {
 
         return reviewRepository.getAverageRating(restaurantId);
 
@@ -89,6 +94,11 @@ public class ReviewService {
     }
 
 
+    private void authCheck(User user, Review review) {
+        if (!review.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException();
+        }
+    }
 
 
 

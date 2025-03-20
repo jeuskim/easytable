@@ -1,5 +1,6 @@
 package com.example.easytable.entity;
 
+import com.example.easytable.entity.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,12 +9,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@Table(name = "Reservation")
-public class Reservation {
+public class Reservation extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reservationId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -29,9 +29,4 @@ public class Reservation {
     private int peopleNumber;
     private String status;
 
-    @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
-
-    @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
 }
