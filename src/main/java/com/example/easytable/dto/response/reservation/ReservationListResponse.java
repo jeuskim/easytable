@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ReservationListResponse {
 
-    private int reservationId;
+    private Long reservationId;
     private RestaurantListResponse restaurant;
     private String status;
     private int peopleNumber;
@@ -19,7 +19,7 @@ public class ReservationListResponse {
 
 
     public ReservationListResponse(Reservation reservation) {
-        this.reservationId = reservation.getReservationId();
+        this.reservationId = reservation.getId();
         this.restaurant = new RestaurantListResponse(reservation.getRestaurant());
         this.status = reservation.getStatus();
         this.peopleNumber = reservation.getPeopleNumber();

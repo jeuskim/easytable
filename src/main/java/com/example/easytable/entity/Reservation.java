@@ -1,5 +1,6 @@
 package com.example.easytable.entity;
 
+import com.example.easytable.entity.base.BaseEntity;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -9,13 +10,12 @@ import static lombok.AccessLevel.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = PROTECTED)
-@Table(name = "Reservation")
-public class Reservation {
+public class Reservation extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reservationId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -31,25 +31,16 @@ public class Reservation {
     private int peopleNumber;
     private String status;
 
-    @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
-
-    @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
-
-
-    public void cancel() {
-        this.status = "CANCEL";
-    }
-
     @Builder
-    public Reservation(User user, Restaurant restaurant, LocalDateTime reservationDatetime, int peopleNumber, String status, LocalDateTime createTime, LocalDateTime updateTime) {
+    public Reservation(User user, Restaurant restaurant, LocalDateTime reservationDatetime, int peopleNumber, String status) {
         this.user = user;
         this.restaurant = restaurant;
         this.reservationDatetime = reservationDatetime;
         this.peopleNumber = peopleNumber;
         this.status = status;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
+    }
+
+    public void cancel() {
+        this.status = "CANCEL";
     }
 }

@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 public class ReservationDetailResponse {
 
-    private int reservationId;
     private String name;
     private String restaurantName;
     private LocalDateTime reservationDatetime;
@@ -17,7 +16,6 @@ public class ReservationDetailResponse {
 
     public ReservationDetailResponse(Reservation reservation) {
 
-        this.reservationId = reservation.getReservationId();
         this.name = reservation.getUser().getName();
         this.restaurantName = reservation.getRestaurant().getName();
         this.reservationDatetime = reservation.getReservationDatetime();

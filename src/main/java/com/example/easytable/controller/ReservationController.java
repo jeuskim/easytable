@@ -1,8 +1,10 @@
 package com.example.easytable.controller;
 
-import com.example.easytable.dto.request.reservation.CreateReservationRequest;
+import com.example.easytable.dto.front.reservation.CreateReservationRequest;
+import com.example.easytable.dto.response.ApiResponse;
 import com.example.easytable.dto.response.reservation.ReservationDetailResponse;
 import com.example.easytable.dto.response.reservation.ReservationListResponse;
+import com.example.easytable.entity.User;
 import com.example.easytable.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,29 +19,33 @@ public class ReservationController {
 
 
     @PostMapping("/reservations/create")
-    public void createReservation(CreateReservationRequest request) {
+    public ApiResponse createReservation(User user, @RequestBody CreateReservationRequest request) {
 
-        reservationService.createReservation(request);
+        reservationService.createReservation(user,request.convert());
+
+        return ApiResponse.success(null);
 
 
     }
     @GetMapping("/reservations")
-    public List<ReservationListResponse> getReservations(Integer userId) {
+    public ApiResponse<List<ReservationListResponse>> getReservations(User user) {
 
-        return reservationService.getReservations(userId);
+        return ApiResponse.success(reservationService.getReservations(user));
     }
 
     @GetMapping("/reservations/{reservationId}")
-    public ReservationDetailResponse getReservation(@PathVariable Integer reservationId) {
+    public ApiResponse<ReservationDetailResponse> getReservation(User user,@PathVariable Long reservationId) {
 
-        return reservationService.getReservation(reservationId);
+        return ApiResponse.success(reservationService.getReservation(user, reservationId));
 
     }
 
     @PatchMapping("/reservations/{reservationId}")
-    public void cancelReservation(@PathVariable Integer reservationId) {
+    public ApiResponse cancelReservation(User user,@PathVariable Long reservationId) {
 
-        reservationService.cancelReservation(reservationId);
+        reservationService.cancelReservation(user, reservationId);
+
+        return ApiResponse.success(null);
     }
 
 

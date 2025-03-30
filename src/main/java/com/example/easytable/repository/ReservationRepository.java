@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ReservationRepository extends JpaRepository<Reservation,Integer> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     @EntityGraph(attributePaths = {"user", "restaurant"})
-    @Query("select r from Reservation r where r.reservationId = :reservationId")
-    Optional<Reservation> findWithUserAndRestaurantById(@Param("reservationId") int reservationId);
+    @Query("select r from Reservation r where r.id = :reservationId")
+    Optional<Reservation> findWithUserAndRestaurantById(@Param("reservationId") Long reservationId);
 
-    @Query("select r from Reservation r join fetch r.restaurant where r.user =: user ")
+    @Query("select r from Reservation r join fetch r.restaurant where r.user =:user ")
     List<Reservation> findAllByUser(User user);
 }

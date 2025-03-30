@@ -1,8 +1,9 @@
 package com.example.easytable.service;
 
-import com.example.easytable.dto.request.reservation.CreateReservationRequest;
+import com.example.easytable.dto.front.reservation.CreateReservationRequest;
 import com.example.easytable.dto.response.reservation.ReservationDetailResponse;
 import com.example.easytable.dto.response.reservation.ReservationListResponse;
+import com.example.easytable.dto.service.request.CreateReservationParam;
 import com.example.easytable.entity.Reservation;
 import com.example.easytable.entity.Restaurant;
 import com.example.easytable.entity.User;
@@ -26,15 +27,11 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final RestaurantRepository restaurantRepository;
-    private final UserRepository userRepository;
 
 
-    public void createReservation(CreateReservationRequest request) {
+    public void createReservation(User user,CreateReservationParam param) {
 
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(UserNotFoundException::new);
-
-        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+        Restaurant restaurant = restaurantRepository.findById(param.getRestaurantId())
                 .orElseThrow(RestaurantNotFoundException::new);
 
 
@@ -42,29 +39,26 @@ public class ReservationService {
                 Reservation.builder()
                 .user(user)
                 .restaurant(restaurant)
-                .peopleNumber(request.getPeopleNumber())
+                .peopleNumber(param.getPeopleNumber())
                 .status("PENDING")
-                .reservationDatetime(request.getReservationDatetime())
-                .createTime(LocalDateTime.now())
-                .updateTime(LocalDateTime.now())
+                .reservationDatetime(param.getReservationDatetime())
                 .build());
 
     }
 
-    public List<ReservationListResponse> getReservations(Integer userId) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
+    public List<ReservationListResponse> getReservations(User user) {
 
         return reservationRepository.findAllByUser(user).stream().map(ReservationListResponse::new).toList();
 
 
     }
 
-    public ReservationDetailResponse getReservation(Integer reservationId) {
+    public ReservationDetailResponse getReservation(User user,Long reservationId) {
 
         Reservation reservation = reservationRepository.findWithUserAndRestaurantById(reservationId)
                 .orElseThrow(ReservationNotFoundException::new);
+
+        authCheck(user, reservation);
 
         return new ReservationDetailResponse(reservation);
 
@@ -73,14 +67,23 @@ public class ReservationService {
 
     }
 
-    public void cancelReservation(Integer reservationId) {
+
+    public void cancelReservation(User user, Long reservationId) {
 
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(UserNotFoundException::new);
 
+        authCheck(user, reservation);
+
         reservation.cancel();
 
 
+    }
+
+    private static void authCheck(User user, Reservation reservation) {
+        if (!reservation.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("권한이 없습니다.");
+        }
     }
 
 }

@@ -6,11 +6,11 @@ import lombok.Getter;
 @Getter
 public class RestaurantListResponse {
 
-    private int restaurantId;
+    private Long restaurantId;
     private String name;
 
     public RestaurantListResponse(Restaurant restaurant) {
-        this.restaurantId = restaurant.getRestaurantId();
+        this.restaurantId = restaurant.getId();
         this.name = restaurant.getName();
     }
 }
