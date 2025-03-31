@@ -19,7 +19,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
 
-    @PostMapping("/register")
+    @PostMapping
     public ApiResponse registerRestaurant(User user, @RequestBody RestaurantRegisterRequest request) {
 
         restaurantService.registerRestaurant(user, request.convert());
@@ -37,7 +37,7 @@ public class RestaurantController {
         return ApiResponse.success(null);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ApiResponse<ListResponse<RestaurantListResponse>> getRestaurants(@RequestBody RestaurantListRequest request) {
         return ApiResponse.success(restaurantService.getRestaurants(request.convert()));
 

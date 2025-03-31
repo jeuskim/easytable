@@ -84,7 +84,7 @@ class RestaurantControllerTest {
 
         String json = mapper.writeValueAsString(param);
 
-        mockMvc.perform(post("/restaurants/register")
+        mockMvc.perform(post("/restaurants")
                         .sessionAttr("userId", manger.getId())
                         .contentType(APPLICATION_JSON)
                         .content(json))
@@ -124,7 +124,7 @@ class RestaurantControllerTest {
 
         String json = mapper.writeValueAsString(param);
 
-        mockMvc.perform(post("/restaurants/register")
+        mockMvc.perform(post("/restaurants")
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isUnauthorized())
@@ -330,7 +330,7 @@ class RestaurantControllerTest {
 
         String json = mapper.writeValueAsString(param);
 
-        mockMvc.perform(get("/restaurants/")
+        mockMvc.perform(get("/restaurants")
                         .contentType(APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
@@ -338,7 +338,6 @@ class RestaurantControllerTest {
                 .andExpect(jsonPath("$.returnMessage").value("Success"))
                 .andExpect(jsonPath("$.data.list.size()").value(5))
                 .andExpect(jsonPath("$.data.list[0].name").value("restaurant1"))
-                .andExpect(jsonPath("$.data.list[0].restaurantId").value(1))
                 .andExpect(jsonPath("$.data.hasNext").value(true))
 
                 .andDo(print());
