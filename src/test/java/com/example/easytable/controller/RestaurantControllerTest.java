@@ -1,5 +1,6 @@
 package com.example.easytable.controller;
 
+import com.example.easytable.dto.front.request.RestaurantListRequest;
 import com.example.easytable.dto.front.response.ListResponse;
 import com.example.easytable.dto.front.response.RestaurantListResponse;
 import com.example.easytable.dto.service.request.RestaurantListParam;
@@ -326,13 +327,10 @@ class RestaurantControllerTest {
 
         restaurantRepository.saveAll(restaurants);
 
-        RestaurantListParam param = new RestaurantListParam("restaurant", 1);
-
-        String json = mapper.writeValueAsString(param);
 
         mockMvc.perform(get("/restaurants")
-                        .contentType(APPLICATION_JSON)
-                        .content(json))
+                        .param("name", "restaurant")
+                        .param("age", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.returnCode").value("0000"))
                 .andExpect(jsonPath("$.returnMessage").value("Success"))

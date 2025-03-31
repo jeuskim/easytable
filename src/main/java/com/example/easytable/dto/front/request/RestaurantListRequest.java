@@ -1,9 +1,14 @@
 package com.example.easytable.dto.front.request;
 
 import com.example.easytable.dto.service.request.RestaurantListParam;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RestaurantListRequest {
 
     private String name;

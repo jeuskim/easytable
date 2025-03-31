@@ -6,6 +6,7 @@ import com.example.easytable.dto.front.request.RestaurantRegisterRequest;
 import com.example.easytable.dto.front.response.ApiResponse;
 import com.example.easytable.dto.front.response.ListResponse;
 import com.example.easytable.dto.front.response.RestaurantListResponse;
+import com.example.easytable.dto.service.request.RestaurantListParam;
 import com.example.easytable.entity.User;
 import com.example.easytable.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,8 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public ApiResponse<ListResponse<RestaurantListResponse>> getRestaurants(@RequestBody RestaurantListRequest request) {
-        return ApiResponse.success(restaurantService.getRestaurants(request.convert()));
+    public ApiResponse<ListResponse<RestaurantListResponse>> getRestaurants(@RequestParam String name, @RequestParam(defaultValue = "1") Integer page) {
+        return ApiResponse.success(restaurantService.getRestaurants(new RestaurantListParam(name, page)));
 
     }
 
