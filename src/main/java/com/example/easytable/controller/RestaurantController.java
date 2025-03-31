@@ -24,7 +24,7 @@ public class RestaurantController {
 
         restaurantService.registerRestaurant(user, request.convert());
 
-        return ApiResponse.success(null);
+        return ApiResponse.success();
 
     }
 
@@ -34,7 +34,7 @@ public class RestaurantController {
 
         restaurantService.modifyRestaurant(user, restaurantId, request.convert());
 
-        return ApiResponse.success(null);
+        return ApiResponse.success();
     }
 
     @GetMapping

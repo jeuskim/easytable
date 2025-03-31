@@ -15,6 +15,11 @@ public class ApiResponse<T> {
         return new ApiResponse<>("0000", "Success", data);
     }
 
+    public static <T> ApiResponse<T> success() {
+        return new ApiResponse<>("0000", "Success", null);
+    }
+
+
     public static <T> ApiResponse<T> fail(String returnMessage) {
         return new ApiResponse<>("0001", returnMessage, null);
     }
