@@ -14,6 +14,9 @@ import com.example.easytable.exception.UnauthorizedException;
 import com.example.easytable.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,8 +68,14 @@ public class RestaurantService {
 
     }
 
-    public ListResponse<RestaurantListResponse> getRestaurants(RestaurantListParam request) {
-        return restaurantRepository.findRestaurants(request);
+    public Slice<Restaurant> getRestaurants(String name, Integer page) {
+        PageRequest pageRequest = PageRequest.of(page - 1, 5);
+
+        return restaurantRepository.findByNameWithPaging(name, pageRequest);
+    }
+
+    public Double getRating(Long restaurantId) {
+        return restaurantRepository.getRating(restaurantId);
     }
 
 

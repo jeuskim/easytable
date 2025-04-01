@@ -1,12 +1,11 @@
 package com.example.easytable.dto.front.response;
 
+import com.example.easytable.entity.Restaurant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@AllArgsConstructor
-@ToString
 public class RestaurantListResponse {
 
     private Long restaurantId;
@@ -17,4 +16,15 @@ public class RestaurantListResponse {
     private Double rating;
 
 
+    public RestaurantListResponse(Restaurant restaurant) {
+        this.restaurantId = restaurant.getId();
+        this.name = restaurant.getName();
+        this.openingHours = restaurant.getOpeningHours();
+        this.closingHours = restaurant.getClosingHours();
+        this.description = restaurant.getDescription();
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
 }

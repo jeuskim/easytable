@@ -7,10 +7,15 @@ import com.example.easytable.dto.front.response.ApiResponse;
 import com.example.easytable.dto.front.response.ListResponse;
 import com.example.easytable.dto.front.response.RestaurantListResponse;
 import com.example.easytable.dto.service.request.RestaurantListParam;
+import com.example.easytable.entity.Restaurant;
 import com.example.easytable.entity.User;
 import com.example.easytable.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -40,7 +45,20 @@ public class RestaurantController {
 
     @GetMapping
     public ApiResponse<ListResponse<RestaurantListResponse>> getRestaurants(@RequestParam String name, @RequestParam(defaultValue = "1") Integer page) {
-        return ApiResponse.success(restaurantService.getRestaurants(new RestaurantListParam(name, page)));
+
+        Slice<Restaurant> slice = restaurantService.getRestaurants(name, page);
+        ListResponse<RestaurantListResponse> response = new ListResponse<>();
+
+
+        response.setList(slice.map(restaurant -> {
+            RestaurantListResponse listResponse = new RestaurantListResponse(restaurant);
+            listResponse.setRating(restaurantService.getRating(restaurant.getId()));
+            return listResponse;
+        }).getContent());
+
+        response.setHasNext(slice.hasNext());
+
+        return ApiResponse.success(response);
 
     }
 

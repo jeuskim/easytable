@@ -21,50 +21,20 @@ import static com.example.easytable.entity.QReview.review;
 public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-    private static final Integer OFFSET = 5;
 
 
     @Override
-    public ListResponse<RestaurantListResponse> findRestaurants(RestaurantListParam request) {
+    public Double getRating(Long restaurantId) {
 
 
-        ListResponse<RestaurantListResponse> response = new ListResponse<>();
-
-
-        BooleanBuilder builder = new BooleanBuilder();
-
-        if (StringUtils.hasText(request.getName())) {
-            builder.and(restaurant.name.contains(request.getName()));
-        }
-
-
-        List<RestaurantListResponse> results = queryFactory
-                .select(Projections.constructor(RestaurantListResponse.class,
-                        restaurant.id.as("id"),
-                        restaurant.name.as("name"),
-                        restaurant.openingHours.as("openingHours"),
-                        restaurant.closingHours.as("closingHours"),
-                        restaurant.description.as("description"),
-                        review.rating.avg().coalesce(0.0).as("rating")
-                ))
+        return queryFactory
+                .select(review.rating.avg().coalesce(0.0))
                 .from(restaurant)
                 .leftJoin(review).on(restaurant.id.eq(review.restaurant.id))
+                .where(restaurant.id.eq(restaurantId))
                 .groupBy(restaurant.id)
-                .where(builder)
-                .offset((request.getPage() - 1) * 5L)
-                .limit(OFFSET + 1)
-                .fetch();
-
-        boolean hasNext = results.size() > OFFSET;
-
-        if (hasNext) {
-            results.remove(results.size() - 1);
-        }
-
-        response.setList(results);
-        response.setHasNext(hasNext);
+                .fetchOne();
 
 
-        return response;
     }
 }

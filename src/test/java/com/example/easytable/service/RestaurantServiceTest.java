@@ -7,7 +7,9 @@ import com.example.easytable.dto.service.request.RestaurantListParam;
 import com.example.easytable.dto.service.request.RestaurantModifyParam;
 import com.example.easytable.dto.service.request.RestaurantRegisterParam;
 import com.example.easytable.entity.Restaurant;
+import com.example.easytable.entity.Review;
 import com.example.easytable.entity.User;
+import com.example.easytable.repository.ReviewRepository;
 import com.example.easytable.repository.UserRepository;
 import com.example.easytable.repository.restaurant.RestaurantRepository;
 import org.junit.jupiter.api.Assertions;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Slice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,9 @@ class RestaurantServiceTest {
 
     @Autowired
     RestaurantService restaurantService;
+
+    @Autowired
+    ReviewRepository reviewRepository;
 
     @BeforeEach
     void clean(){
@@ -228,12 +234,11 @@ class RestaurantServiceTest {
 
         restaurantRepository.saveAll(restaurants);
 
-        RestaurantListParam param = new RestaurantListParam("restaurant", 20);
 
-        ListResponse<RestaurantListResponse> list = restaurantService.getRestaurants(param);
+        Slice<Restaurant> slice = restaurantService.getRestaurants("restaurant", 20);
 
-        Assertions.assertFalse(list.isHasNext());
-        Assertions.assertEquals(5, list.getList().size());
+        Assertions.assertFalse(slice.hasNext());
+        Assertions.assertEquals(5, slice.getContent().size());
 
     }
 
@@ -266,12 +271,66 @@ class RestaurantServiceTest {
 
         restaurantRepository.saveAll(restaurants);
 
-        RestaurantListParam param = new RestaurantListParam("restaurant", 19);
 
-        ListResponse<RestaurantListResponse> list = restaurantService.getRestaurants(param);
+        Slice<Restaurant> slice = restaurantService.getRestaurants("restaurant", 19);
 
-        Assertions.assertTrue(list.isHasNext());
-        Assertions.assertEquals(5, list.getList().size());
+        Assertions.assertTrue(slice.hasNext());
+        Assertions.assertEquals(5, slice.getContent().size());
+
+    }
+
+    @Test
+    void 리뷰_점수() {
+
+        User manger = User.builder()
+                .name("test")
+                .email("test@test.com")
+                .password("test")
+                .phone("010-1234-5678")
+                .role("MANAGER")
+                .build();
+        User user = User.builder()
+                .name("test2")
+                .email("test2@test.com")
+                .password("test2")
+                .phone("010-1234-5678")
+                .role("USER")
+                .build();
+
+        userRepository.save(manger);
+        userRepository.save(user);
+
+
+        Restaurant restaurant = Restaurant.builder()
+                .name("test restaurant")
+                .location("test location")
+                .openingHours("12:00")
+                .closingHours("21:00")
+                .cuisineType("cuisineType")
+                .description("test description")
+                .manager(manger)
+                .build();
+
+        restaurantRepository.save(restaurant);
+
+        List<Review> reviews = new ArrayList<>();
+
+        IntStream.rangeClosed(1, 10).forEach((i) -> reviews.add(
+                Review.builder()
+                        .user(user)
+                        .restaurant(restaurant)
+                        .rating(i)
+                        .comment("comment" + i)
+                        .build())
+        );
+
+        reviewRepository.saveAll(reviews);
+
+
+        Assertions.assertEquals(5.5, restaurantService.getRating(restaurant.getId()));
+
+
+
 
     }
 }

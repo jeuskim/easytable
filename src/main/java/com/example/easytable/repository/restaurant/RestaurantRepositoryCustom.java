@@ -6,7 +6,7 @@ import com.example.easytable.dto.front.response.RestaurantListResponse;
 import com.example.easytable.dto.service.request.RestaurantListParam;
 
 public interface RestaurantRepositoryCustom {
-    ListResponse<RestaurantListResponse> findRestaurants(RestaurantListParam request);
+    Double getRating(Long restaurantId);
 
 
 }
