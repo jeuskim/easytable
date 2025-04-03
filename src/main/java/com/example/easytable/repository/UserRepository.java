@@ -1,6 +1,6 @@
 package com.example.easytable.repository;
 
-import com.example.easytable.entity.User;
+import com.example.easytable.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,14 +1,12 @@
 package com.example.easytable.service;
 
 
-import com.example.easytable.dto.front.response.ListResponse;
-import com.example.easytable.dto.front.response.RestaurantListResponse;
-import com.example.easytable.dto.service.request.RestaurantListParam;
 import com.example.easytable.dto.service.request.RestaurantModifyParam;
 import com.example.easytable.dto.service.request.RestaurantRegisterParam;
 import com.example.easytable.entity.Restaurant;
 import com.example.easytable.entity.Review;
-import com.example.easytable.entity.User;
+import com.example.easytable.entity.user.User;
+import com.example.easytable.entity.user.UserType;
 import com.example.easytable.repository.ReviewRepository;
 import com.example.easytable.repository.UserRepository;
 import com.example.easytable.repository.restaurant.RestaurantRepository;
@@ -22,6 +20,8 @@ import org.springframework.data.domain.Slice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import static com.example.easytable.entity.user.UserType.*;
 
 @SpringBootTest
 class RestaurantServiceTest {
@@ -40,6 +40,7 @@ class RestaurantServiceTest {
 
     @BeforeEach
     void clean(){
+        reviewRepository.deleteAll();
         restaurantRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -53,7 +54,7 @@ class RestaurantServiceTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         userRepository.save(manger);
@@ -85,15 +86,15 @@ class RestaurantServiceTest {
     @Test
     void 가게_등록_권한없음() {
 
-        User manger = User.builder()
+        User user = User.builder()
                 .name("test")
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("USER")
+                .userType(USER)
                 .build();
 
-        userRepository.save(manger);
+        userRepository.save(user);
 
         RestaurantRegisterParam param = RestaurantRegisterParam.builder()
                 .name("test restaurant")
@@ -106,7 +107,7 @@ class RestaurantServiceTest {
 
 
 
-        Assertions.assertThrows(RuntimeException.class, () -> restaurantService.registerRestaurant(manger, param));
+        Assertions.assertThrows(RuntimeException.class, () -> restaurantService.registerRestaurant(user, param));
 
 
     }
@@ -119,7 +120,7 @@ class RestaurantServiceTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         userRepository.save(manger);
@@ -166,14 +167,14 @@ class RestaurantServiceTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
         User user = User.builder()
                 .name("test2")
                 .email("test2@test.com")
                 .password("test2")
                 .phone("010-1234-5678")
-                .role("USER")
+                .userType(USER)
                 .build();
 
         userRepository.save(manger);
@@ -215,7 +216,7 @@ class RestaurantServiceTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         userRepository.save(manger);
@@ -252,7 +253,7 @@ class RestaurantServiceTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         userRepository.save(manger);
@@ -287,14 +288,14 @@ class RestaurantServiceTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
         User user = User.builder()
                 .name("test2")
                 .email("test2@test.com")
                 .password("test2")
                 .phone("010-1234-5678")
-                .role("USER")
+                .userType(USER)
                 .build();
 
         userRepository.save(manger);

@@ -1,16 +1,11 @@
 package com.example.easytable.controller;
 
-import com.example.easytable.dto.front.request.RestaurantListRequest;
-import com.example.easytable.dto.front.response.ListResponse;
-import com.example.easytable.dto.front.response.RestaurantListResponse;
-import com.example.easytable.dto.service.request.RestaurantListParam;
 import com.example.easytable.dto.service.request.RestaurantModifyParam;
 import com.example.easytable.dto.service.request.RestaurantRegisterParam;
 import com.example.easytable.entity.Restaurant;
-import com.example.easytable.entity.User;
+import com.example.easytable.entity.user.User;
 import com.example.easytable.repository.UserRepository;
 import com.example.easytable.repository.restaurant.RestaurantRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,19 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultHandler;
-import org.springframework.test.web.servlet.assertj.MockMvcTester;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.StatusResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.example.easytable.entity.user.UserType.MANAGER;
+import static com.example.easytable.entity.user.UserType.USER;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -69,7 +59,7 @@ class RestaurantControllerTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         userRepository.save(manger);
@@ -109,7 +99,7 @@ class RestaurantControllerTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         userRepository.save(manger);
@@ -145,7 +135,7 @@ class RestaurantControllerTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         userRepository.save(manger);
@@ -201,7 +191,7 @@ class RestaurantControllerTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         User user = User.builder()
@@ -209,7 +199,7 @@ class RestaurantControllerTest {
                 .email("test2@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("USER")
+                .userType(USER)
                 .build();
 
         userRepository.save(manger);
@@ -258,7 +248,7 @@ class RestaurantControllerTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
 
@@ -308,7 +298,7 @@ class RestaurantControllerTest {
                 .email("test@test.com")
                 .password("test")
                 .phone("010-1234-5678")
-                .role("MANAGER")
+                .userType(MANAGER)
                 .build();
 
         userRepository.save(manger);

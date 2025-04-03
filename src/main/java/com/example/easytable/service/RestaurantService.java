@@ -1,21 +1,15 @@
 package com.example.easytable.service;
 
-import com.example.easytable.dto.front.request.RestaurantListRequest;
-import com.example.easytable.dto.front.request.RestaurantModifyRequest;
-import com.example.easytable.dto.front.request.RestaurantRegisterRequest;
-import com.example.easytable.dto.front.response.ListResponse;
-import com.example.easytable.dto.front.response.RestaurantListResponse;
-import com.example.easytable.dto.service.request.RestaurantListParam;
 import com.example.easytable.dto.service.request.RestaurantModifyParam;
 import com.example.easytable.dto.service.request.RestaurantRegisterParam;
 import com.example.easytable.entity.Restaurant;
-import com.example.easytable.entity.User;
+import com.example.easytable.entity.user.User;
+import com.example.easytable.entity.user.UserType;
 import com.example.easytable.exception.UnauthorizedException;
 import com.example.easytable.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +24,7 @@ public class RestaurantService {
 
     public void registerRestaurant(User user, RestaurantRegisterParam request) {
 
-        if (!user.getRole().equals("MANAGER")) {
+        if (user.getUserType() != UserType.MANAGER) {
             throw new RuntimeException("권한이 없습니다.");
         }
 

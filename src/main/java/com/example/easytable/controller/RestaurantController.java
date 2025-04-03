@@ -1,21 +1,16 @@
 package com.example.easytable.controller;
 
-import com.example.easytable.dto.front.request.RestaurantListRequest;
 import com.example.easytable.dto.front.request.RestaurantModifyRequest;
 import com.example.easytable.dto.front.request.RestaurantRegisterRequest;
 import com.example.easytable.dto.front.response.ApiResponse;
 import com.example.easytable.dto.front.response.ListResponse;
 import com.example.easytable.dto.front.response.RestaurantListResponse;
-import com.example.easytable.dto.service.request.RestaurantListParam;
 import com.example.easytable.entity.Restaurant;
-import com.example.easytable.entity.User;
+import com.example.easytable.entity.user.User;
 import com.example.easytable.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/restaurants")

@@ -1,4 +1,4 @@
-package com.example.easytable.entity;
+package com.example.easytable.entity.user;
 
 import com.example.easytable.entity.base.BaseEntity;
 import lombok.*;
@@ -22,14 +22,14 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private String phone;
-    private String role;
+    private UserType userType;
 
     @Builder
-    public User(String name, String email, String password, String phone, String role) {
+    public User(String name, String email, String password, String phone, UserType userType) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
-        this.role = role;
+        this.userType = userType;
     }
 }

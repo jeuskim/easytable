@@ -1,6 +1,6 @@
 package com.example.easytable.config.auth;
 
-import com.example.easytable.entity.User;
+import com.example.easytable.entity.user.User;
 import com.example.easytable.exception.UnauthorizedException;
 import com.example.easytable.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;

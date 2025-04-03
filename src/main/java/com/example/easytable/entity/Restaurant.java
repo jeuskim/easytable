@@ -1,9 +1,9 @@
 package com.example.easytable.entity;
 
 
-import com.example.easytable.dto.front.request.RestaurantModifyRequest;
 import com.example.easytable.dto.service.request.RestaurantModifyParam;
 import com.example.easytable.entity.base.BaseEntity;
+import com.example.easytable.entity.user.User;
 import lombok.*;
 
 import jakarta.persistence.*;
