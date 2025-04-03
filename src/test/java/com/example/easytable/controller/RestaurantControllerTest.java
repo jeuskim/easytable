@@ -118,7 +118,6 @@ class RestaurantControllerTest {
         mockMvc.perform(post("/restaurants")
                         .contentType(APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.returnCode").value("0001"))
                 .andExpect(jsonPath("$.returnMessage").value("권한이 없습니다."))
                 .andDo(print());
@@ -232,7 +231,6 @@ class RestaurantControllerTest {
                         .sessionAttr("userId", user.getId())
                         .contentType(APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.returnCode").value("0001"))
                 .andExpect(jsonPath("$.returnMessage").value("권한이 없습니다."))
                 .andDo(print());
@@ -280,7 +278,6 @@ class RestaurantControllerTest {
         mockMvc.perform(patch("/restaurants/{restaurantId}", restaurant.getId())
                         .contentType(APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.returnCode").value("0001"))
                 .andExpect(jsonPath("$.returnMessage").value("권한이 없습니다."))
                 .andDo(print());

@@ -1,7 +1,7 @@
 package com.example.easytable.exception;
 
-public class UnauthorizedException extends RuntimeException {
-    private static final String MESSAGE = "권한이 없습니다. ";
+public class UnauthorizedException extends EasyTableException {
+    private static final String MESSAGE = "권한이 없습니다.";
 
 
     public UnauthorizedException() {
@@ -12,5 +12,10 @@ public class UnauthorizedException extends RuntimeException {
         super(MESSAGE, cause);
     }
 
+
+    @Override
+    public String getStatusCode() {
+        return "0001";
+    }
 
 }

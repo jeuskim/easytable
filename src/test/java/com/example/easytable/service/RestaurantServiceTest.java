@@ -7,6 +7,8 @@ import com.example.easytable.entity.Restaurant;
 import com.example.easytable.entity.Review;
 import com.example.easytable.entity.user.User;
 import com.example.easytable.entity.user.UserType;
+import com.example.easytable.exception.RestaurantNotFoundException;
+import com.example.easytable.exception.UnauthorizedException;
 import com.example.easytable.repository.ReviewRepository;
 import com.example.easytable.repository.UserRepository;
 import com.example.easytable.repository.restaurant.RestaurantRepository;
@@ -107,7 +109,7 @@ class RestaurantServiceTest {
 
 
 
-        Assertions.assertThrows(RuntimeException.class, () -> restaurantService.registerRestaurant(user, param));
+        Assertions.assertThrows(UnauthorizedException.class, () -> restaurantService.registerRestaurant(user, param));
 
 
     }
@@ -202,7 +204,7 @@ class RestaurantServiceTest {
                 .build();
 
 
-        Assertions.assertThrows(RuntimeException.class, () -> restaurantService.modifyRestaurant(user, restaurant.getId(), param));
+        Assertions.assertThrows(UnauthorizedException.class, () -> restaurantService.modifyRestaurant(user, restaurant.getId(), param));
 
     }
 

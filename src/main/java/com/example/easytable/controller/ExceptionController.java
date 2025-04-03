@@ -1,6 +1,7 @@
 package com.example.easytable.controller;
 
 import com.example.easytable.dto.front.response.ApiResponse;
+import com.example.easytable.exception.EasyTableException;
 import com.example.easytable.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,9 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionController {
 
     @ExceptionHandler
-    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    public ApiResponse CookieException(UnauthorizedException e) {
+    public ApiResponse CookieException(EasyTableException e) {
 
-        return ApiResponse.fail("권한이 없습니다.");
+        return ApiResponse.fail(e.getStatusCode(),e.getMessage());
     }
 }

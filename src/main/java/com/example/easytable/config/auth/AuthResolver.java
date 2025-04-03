@@ -2,6 +2,7 @@ package com.example.easytable.config.auth;
 
 import com.example.easytable.entity.user.User;
 import com.example.easytable.exception.UnauthorizedException;
+import com.example.easytable.exception.UserNotFoundException;
 import com.example.easytable.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -39,7 +40,7 @@ public class AuthResolver implements HandlerMethodArgumentResolver {
 
         Long id = (Long) session.getAttribute("userId");
 
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 유저가 존재하지 않습니다."));
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
 }

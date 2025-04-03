@@ -5,6 +5,7 @@ import com.example.easytable.dto.service.request.RestaurantRegisterParam;
 import com.example.easytable.entity.Restaurant;
 import com.example.easytable.entity.user.User;
 import com.example.easytable.entity.user.UserType;
+import com.example.easytable.exception.RestaurantNotFoundException;
 import com.example.easytable.exception.UnauthorizedException;
 import com.example.easytable.repository.restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class RestaurantService {
     public void registerRestaurant(User user, RestaurantRegisterParam request) {
 
         if (user.getUserType() != UserType.MANAGER) {
-            throw new RuntimeException("권한이 없습니다.");
+            throw new UnauthorizedException();
         }
 
         restaurantRepository.save(
@@ -48,7 +49,7 @@ public class RestaurantService {
         log.info("restaurantId = {}", restaurantId);
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new RuntimeException("해당 가게가 없음."));
+                .orElseThrow(RestaurantNotFoundException::new);
 
         log.info("restaurant.mangerId ={}", restaurant.getManager().getId());
         log.info("user.id = {}", user.getId());
@@ -56,6 +57,7 @@ public class RestaurantService {
         if (!restaurant.getManager().getId().equals(user.getId())) {
             throw new UnauthorizedException();
         }
+
 
         restaurant.modify(request);
 
