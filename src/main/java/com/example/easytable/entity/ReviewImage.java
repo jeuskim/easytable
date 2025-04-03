@@ -1,5 +1,6 @@
 package com.example.easytable.entity;
 
+import com.example.easytable.entity.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,12 +9,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@Table(name = "ReviewImage")
-public class ReviewImage {
+public class ReviewImage extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reviewImageId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "review_id")
