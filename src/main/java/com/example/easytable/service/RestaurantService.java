@@ -15,6 +15,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional
 @Slf4j
@@ -54,7 +56,8 @@ public class RestaurantService {
         log.info("restaurant.mangerId ={}", restaurant.getManager().getId());
         log.info("user.id = {}", user.getId());
 
-        if (!restaurant.getManager().getId().equals(user.getId())) {
+
+        if (!Objects.equals(restaurant.getManager().getId(), user.getId())) {
             throw new UnauthorizedException();
         }
 
