@@ -1,5 +1,6 @@
 package com.example.easytable.entity;
 
+import com.example.easytable.entity.base.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,12 +9,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@Table(name = "RestaurantImage")
-public class RestaurantImage {
+public class RestaurantImage extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int restaurantImageId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
@@ -21,9 +21,5 @@ public class RestaurantImage {
 
     private String imageUrl;
 
-    @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
 
-    @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
 }
