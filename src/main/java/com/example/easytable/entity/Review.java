@@ -1,19 +1,22 @@
 package com.example.easytable.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.example.easytable.dto.service.request.EditReviewParam;
+import com.example.easytable.entity.base.BaseEntity;
+import lombok.*;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
+import static lombok.AccessLevel.*;
 
 @Entity
+@NoArgsConstructor(access = PROTECTED)
+@ToString
 @Getter
-@Setter
-@Table(name = "Review")
-public class Review {
+public class Review extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reviewId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -26,12 +29,16 @@ public class Review {
     private int rating;
     private String comment;
 
-    @Column(name = "review_datetime", nullable = false)
-    private LocalDateTime reviewDatetime;
+    @Builder
+    public Review(User user, Restaurant restaurant, int rating, String comment) {
+        this.user = user;
+        this.restaurant = restaurant;
+        this.rating = rating;
+        this.comment = comment;
+    }
 
-    @Column(name = "create_time", nullable = false)
-    private LocalDateTime createTime;
-
-    @Column(name = "update_time", nullable = false)
-    private LocalDateTime updateTime;
+    public void edit(EditReviewParam param) {
+        this.comment = param.getEditComment();
+        this.rating = param.getRating();
+    }
 }
